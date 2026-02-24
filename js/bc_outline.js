@@ -28,45 +28,82 @@
 
 /* Generate an outline based on h1 through h6 headings in the soruce document */
 
-window.addEventListener("load", makeOutline); // event listener for the load event | runs the makeOutline() function when the page is loaded
+window.addEventListener("load", makeOutline);
 
 function makeOutline() {
    // Location of the document outline
    var outline = document.getElementById("outline");
-
-   // defines the location of the outline and source variables
 
    // Source document for the outline
    var source = document.getElementById("doc");
 
    var mainHeading = document.createElement("h1");
    var outlineList = document.createElement("ol");
-   var headingText = document.createTextNode("Outline"); // creates element nodes for the h1 and ol elements | creates a text node containing the text "Outline"
+   var headingText = document.createTextNode("Outline");
 
    mainHeading.appendChild(headingText);
    outline.appendChild(mainHeading);
    outline.appendChild(outlineList);
 
+   createList(source, outlineList);
+
 }
 
 function createList(source, outlineList) {
    // Headings for the outline
-   var heading = ["H1", "H2", "H3", "H4", "H5", "H6"]; // array of headings to be displayed in the outline
+   var headings = ["H1", "H2", "H3", "H4", "H5", "H6"];
 
-   /* Loops through all of teh child nodes of source article until no child nodes are left */
+   // Previous Level of the Headings
+   var prevLevel = 0;
+
+   // Running total of the article headings
+   var headNum = 0;
+
+   /* Loop through all of the child nodes of source article until no child nodes are left */
 
    for (var n = source.firstChild; n !== null; n = n.nextSibling) {
-      // starts the loop with the first child node | runs the loop as long as the current node is not null | goes to the next sibling node each time through the loops
 
       // Examine only article headings
-      var headLevel = headings.indexOf(n.nodeName); // retrieves the index of the element node name
+      var headLevel = headings.indexOf(n.nodeName);
+      if (headLevel !== -1) {
+         // Add an id to the heading if it is missing
+         headNum++;
+         if (n.hasAttribute("id") === false) {
+            n.setAttribute("id", "head" + headNum);
+         }
+         var listElem= document.createElement("li");
 
-      if (headLevel !== -1) { // tests whether the element node name appears in the headings array
-         var listElem = document.createElement("li"); // creates and li element
-         listElem.innerHTML = n.firstChild.nodeValue; // sets the inner HTML of the li element to the value of the heading's text node
-         outlineList.appendChild(listElem); // appends the li element to the outline list
+         // Create hypertext links to the document headings
+         var linkElem = document.createElement("a");
+         linkElem.innerHTML = n.innerHTML;
+         
+         listElem.innerHTML = n.firstChild.nodeValue;
 
-         createList(source, outlineList); // populates the online list | source of the outline headings | node containing the outline list
+         if (headLevel === prevLevel) {
+         // Append the list item to the current list
+         outlineList.appendChild(listElem);
+      
+         } else if (headLevel > prevLevel) {
+            // Start a new nested list
+            var nestedList = document.createElement("ol");
+            nestedList.appendChild(listElem);
+            // Append nested list to last item in the current list
+            outlineList.lastChild.appendChild(nestedList);
+            // Change the current list to the nested list
+            outlineList - nestedList;
+         } else {
+            // Append the list item to a higher list
+            // Calculate the difference between the current and previous level
+            var levelUp = prevLevel - headLevel;
+            // Go up to the higher level
+            for (var i = 1; i <= levelUp; i++) {
+               outlineList = outlineList.parentNode.parentNode;
+            }
+            outlineList.appendChild(listElem);
+         }
+
+         // Update the value of prevLevel
+         prevLevel = headLevel;
       }
    }
 }
