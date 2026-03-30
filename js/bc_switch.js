@@ -22,13 +22,13 @@ window.addEventListener("load", setupStyles);
 function setupStyles() {
    // Create a link element for the page view styles
    var pageStyle = document.createElement("link");
-   pageStyle.setAttribute("href", "../css/bc_page.css");
-   pageStyle.setAttribute("rel", "stylesheet");
-   pageStyle.setAttribute("disabled", "disabled");
+    pageStyle.setAttribute("href", "./css/bc_page.css");
+    pageStyle.setAttribute("rel", "stylesheet");
+    pageStyle.setAttribute("disabled", "disabled");
    
    // Append the link element to the document head
    document.head.appendChild(pageStyle);
-   pageStyle.disabled = true;
+    pageStyle.disabled = true;
 
 // Insert buttons for the style switcher
 var buttonDIV = document.createElement("div");
@@ -54,7 +54,7 @@ document.head.appendChild(buttonStyles);
 // Add style rules to the embedded style sheet
 document.styleSheets[document.styleSheets.length-1].insertRule("div#styleButtons { \
    position: fixed; \
-}", 0);
+]}", 0);
 
 document.styleSheets[document.styleSheets.length-1].insertRule(
    "div#styleButtons input { \
@@ -83,9 +83,6 @@ webButton.onclick = function() {
 }
 
 pageButton.onclick = function() {
-   pageStyle.disabled = false;
-};
-
+        pageStyle.disabled = false;
+    }
 }
-
-var webButton
